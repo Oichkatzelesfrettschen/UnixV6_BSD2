@@ -16,6 +16,16 @@
 #include "0.h"
 #include "yy.h"
 
+/* Forward declarations for lexical helpers */
+STATIC int      skipwhite(register int c);
+STATIC int      lex_identifier(register int c);
+STATIC int      lex_number(register int c);
+STATIC int      lex_dot_number(register int c);
+STATIC int      lex_string(int delim);
+STATIC int      lex_brace_comment(void);
+STATIC int      lex_paren_comment(void);
+STATIC int      lex_illegal(int ch);
+
 /*
  * Scanner
  */
@@ -58,229 +68,53 @@ yylex()
 #endif
 
 next:
-	/*
-	 * skip white space
-	 */
-#ifdef PXP
-	yywhcnt = 0;
-#endif
-	while (c == ' ' || c == '\t') {
-#ifdef PXP
-		if (c == '\t')
-			yywhcnt++;
-		yywhcnt++;
-#endif
-		c = getchar();
-	}
-	yyecol = yycol;
-	yyeline = yyline;
-	yyefile = filename;
+       c = skipwhite(c);
+       yyecol = yycol;
+       yyeline = yyline;
+       yyefile = filename;
 	yyeseqid = yyseqid;
 	yyseekp = yylinpt;
 	cp = token;
 	yylval = yyline;
 	switch (c) {
-		case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': 
-		case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n': 
-		case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u': 
-		case 'v': case 'w': case 'x': case 'y': case 'z': 
-		case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': 
-		case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N': 
-		case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U': 
-		case 'V': case 'W': case 'X': case 'Y': case 'Z': 
-			do {
-				*cp++ = c;
-				c = getchar();
-			} while (alph(c) || digit(c));
-			*cp = 0;
-			if (opt('s'))
-				for (cp = token; *cp; cp++)
-					if (*cp >= 'A' && *cp <= 'Z') {
-						*cp =| ' ';
-					}
-			yysavc = c;
-			ip = hash(0, 1);
-			if (*ip < yykey || *ip >= lastkey) {
-				yylval = *ip;
-				return (YID);
-			}
-			yylval = yyline;
-			/*
-			 * For keywords
-			 * the lexical token
-			 * is magically retrieved
-			 * from the keyword table.
-			 */
-			return ((*ip)[1]);
-		case '0': case '1': case '2': case '3': case '4':
-		case '5': case '6': case '7': case '8': case '9':
-			f = 0;
-			do {
-				*cp++ = c;
-				c = getchar();
-			} while (digit(c));
-			if (c == 'b' || c == 'B') {
-				/*
-				 * nonstandard - octal constants
-				 */
-				if (opt('s')) {
-					standard();
-					yerror("Octal constants are non-standard");
-				}
-				*cp = 0;
-				yylval = copystr(token);
-				return (YBINT);
-			}
-			if (c == '.') {
-				c = getchar();
-				if (c == '.') {
-					*cp = 0;
-					yysavc = YDOTDOT;
-					yylval = copystr(token);
-					return (YINT);
-				}
-infpnumb:
-				f++;
-				*cp++ = '.';
-				if (!digit(c)) {
-					yyset();
-					recovered();
-					yerror("Digits required after decimal point");
-					*cp++ = '0';
-				} else
-					while (digit(c)) {
-						*cp++ = c;
-						c = getchar();
-					}
-			}
-			if (c == 'e' || c == 'E') {
-				f++;
-				*cp++ = c;
-				if ((c = yysavc) == 0)
-					c = getchar();
-				if (c == '+' || c == '-') {
-					*cp++ = c;
-					c = getchar();
-				}
-				if (!digit(c)) {
-					yyset();
-					yerror("Digits required in exponent");
-					*cp++ = '0';
-				} else
-					while (digit(c)) {
-						*cp++ = c;
-						c = getchar();
-					}
-			}
-			*cp = 0;
-			yysavc = c;
-			yylval = copystr(token);
-			if (f)
-				return (YNUMB);
-			return (YINT);
-		case '"':
-		case '`':
-			if (!any(bufp + 1, c))
-				goto illch;
-			if (!dquote) {
-				recovered();
-				dquote++;
-				yerror("Character/string delimiter is '");
-			}
-		case '\'':
-		case '#':
-			delim = c;
-			do {
-				do {
-					c = getchar();
-					if (c == '\n') {
-						yerror("Unmatched %c for string", delim);
-						if (cp == token)
-							*cp++ = ' ', cp++;
-						break;
-					}
-					*cp++ = c;
-				} while (c != delim);
-				c = getchar();
-			} while (c == delim);
-			*--cp = 0;
-			if (cp == token) {
-				yerror("Null string not allowed");
-				*cp++ = ' ';
-				*cp++ = 0;
-			}
-			yysavc = c;
-			yylval = copystr(token);
-			return (YSTRING);
-		case '.':
-			c = getchar();
-			if (c == '.')
-				return (YDOTDOT);
-			if (digit(c)) {
-				recovered();
-				yerror("Digits required before decimal point");
-				*cp++ = '0';
-				goto infpnumb;
-			}
-			yysavc = c;
-			return ('.');
-		case '{':
-			/*
-			 * { ... } comment
-			 */
-#ifdef PXP
-			getcm(c);
-#endif
-#ifdef PI
-			c = options();
-			while (c != '}') {
-				if (c <= 0)
-					goto nonterm;
-				if (c == '{') {
-					warning();
-					yyset();
-					yerror("{ in a { ... } comment");
-				}
-				c = getchar();
-			}
-#endif
-			c = getchar();
-			goto next;
-		case '(':
-			if ((c = getchar()) == '*') {
-				/*
-				 * (* ... *) comment
-				 */
-#ifdef PXP
-				getcm(c);
-				c = getchar();
-				goto next;
-#endif
-#ifdef PI
-				c = options();
-				for (;;) {
-					if (c < 0) {
-nonterm:
-						yerror("Comment does not terminate - QUIT");
-						pexit(ERRS);
-					}
-					if (c == '(' && (c = getchar()) == '*') {
-						warning();
-						yyset();
-						yerror("(* in a (* ... *) comment");
-					}
-					if (c == '*') {
-						if ((c = getchar()) != ')')
-							continue;
-						c = getchar();
-						goto next;
-					}
-					c = getchar();
-				}
-#endif
-			}
-			yysavc = c;
-			c = '(';
+               case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
+               case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
+               case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
+               case 'v': case 'w': case 'x': case 'y': case 'z':
+               case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+               case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+               case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
+               case 'V': case 'W': case 'X': case 'Y': case 'Z':
+                       return (lex_identifier(c));
+               case '0': case '1': case '2': case '3': case '4':
+               case '5': case '6': case '7': case '8': case '9':
+                       return (lex_number(c));
+               case '"':
+               case '`':
+               case '\'':
+               case '#':
+                       return (lex_string(c));
+               case '.':
+                       c = getchar();
+                       if (c == '.')
+                               return (YDOTDOT);
+                       if (digit(c)) {
+                               recovered();
+                               yerror("Digits required before decimal point");
+                               return (lex_dot_number(c));
+                       }
+                       yysavc = c;
+                       return ('.');
+               case '{':
+                       c = lex_brace_comment();
+                       goto next;
+               case '(': 
+                       if ((c = getchar()) == '*') {
+                               c = lex_paren_comment();
+                               goto next;
+                       }
+                       yysavc = c;
+                       c = '(';
 		case ';':
 		case ',':
 		case ':':
@@ -341,8 +175,285 @@ yyset()
 setuflg()
 {
 
-	if (charbuf[71] != '\n') {
-		charbuf[72] = '\n';
-		charbuf[73] = 0;
-	}
+        if (charbuf[71] != '\n') {
+                charbuf[72] = '\n';
+                charbuf[73] = 0;
+        }
+}
+
+/*
+ * Skip over blanks and tabs.
+ */
+STATIC int
+skipwhite(register int c)
+{
+#ifdef PXP
+       yywhcnt = 0;
+#endif
+       while (c == ' ' || c == '\t') {
+#ifdef PXP
+               if (c == '\t')
+                       yywhcnt++;
+               yywhcnt++;
+#endif
+               c = getchar();
+       }
+       return (c);
+}
+
+/*
+ * Scan an identifier or keyword beginning with character c.
+ */
+STATIC int
+lex_identifier(register int c)
+{
+       register char *cp = token;
+       register **ip;
+
+       do {
+               *cp++ = c;
+               c = getchar();
+       } while (alph(c) || digit(c));
+       *cp = 0;
+       if (opt('s'))
+               for (cp = token; *cp; cp++)
+                       if (*cp >= 'A' && *cp <= 'Z')
+                               *cp =| ' ';
+       yysavc = c;
+       ip = hash(0, 1);
+       if (*ip < yykey || *ip >= lastkey) {
+               yylval = *ip;
+               return (YID);
+       }
+       yylval = yyline;
+       return ((*ip)[1]);
+}
+
+/*
+ * Scan a number beginning with digit c.
+ */
+STATIC int
+lex_number(register int c)
+{
+       register char *cp = token;
+       int f = 0;
+
+       do {
+               *cp++ = c;
+               c = getchar();
+       } while (digit(c));
+       if (c == 'b' || c == 'B') {
+               if (opt('s')) {
+                       standard();
+                       yerror("Octal constants are non-standard");
+               }
+               *cp = 0;
+               yylval = copystr(token);
+               return (YBINT);
+       }
+       if (c == '.') {
+               c = getchar();
+               if (c == '.') {
+                       *cp = 0;
+                       yysavc = YDOTDOT;
+                       yylval = copystr(token);
+                       return (YINT);
+               }
+               f++;
+               *cp++ = '.';
+               if (!digit(c)) {
+                       yyset();
+                       recovered();
+                       yerror("Digits required after decimal point");
+                       *cp++ = '0';
+               } else
+                       while (digit(c)) {
+                               *cp++ = c;
+                               c = getchar();
+                       }
+       }
+       if (c == 'e' || c == 'E') {
+               f++;
+               *cp++ = c;
+               if ((c = yysavc) == 0)
+                       c = getchar();
+               if (c == '+' || c == '-') {
+                       *cp++ = c;
+                       c = getchar();
+               }
+               if (!digit(c)) {
+                       yyset();
+                       yerror("Digits required in exponent");
+                       *cp++ = '0';
+               } else
+                       while (digit(c)) {
+                               *cp++ = c;
+                               c = getchar();
+                       }
+       }
+       *cp = 0;
+       yysavc = c;
+       yylval = copystr(token);
+       return (f ? YNUMB : YINT);
+}
+
+/*
+ * Scan a real number which began with a leading '.'.
+ */
+STATIC int
+lex_dot_number(register int c)
+{
+       register char *cp = token;
+
+       *cp++ = '0';
+       *cp++ = '.';
+       if (!digit(c)) {
+               yyset();
+               recovered();
+               yerror("Digits required after decimal point");
+               *cp++ = '0';
+       } else
+               while (digit(c)) {
+                       *cp++ = c;
+                       c = getchar();
+               }
+       if (c == 'e' || c == 'E') {
+               *cp++ = c;
+               if ((c = yysavc) == 0)
+                       c = getchar();
+               if (c == '+' || c == '-') {
+                       *cp++ = c;
+                       c = getchar();
+               }
+               if (!digit(c)) {
+                       yyset();
+                       yerror("Digits required in exponent");
+                       *cp++ = '0';
+               } else
+                       while (digit(c)) {
+                               *cp++ = c;
+                               c = getchar();
+                       }
+       }
+       *cp = 0;
+       yysavc = c;
+       yylval = copystr(token);
+       return (YNUMB);
+}
+
+/*
+ * Scan a quoted string or character constant.
+ */
+STATIC int
+lex_string(int delim)
+{
+       register char *cp = token;
+       register int c = delim;
+
+       if (!any(bufp + 1, delim))
+               return (lex_illegal(delim));
+       if (!dquote) {
+               recovered();
+               dquote++;
+               yerror("Character/string delimiter is '");
+       }
+       do {
+               do {
+                       c = getchar();
+                       if (c == '\n') {
+                               yerror("Unmatched %c for string", delim);
+                               if (cp == token)
+                                       *cp++ = ' ', cp++;
+                               break;
+                       }
+                       *cp++ = c;
+               } while (c != delim);
+               c = getchar();
+       } while (c == delim);
+       *--cp = 0;
+       if (cp == token) {
+               yerror("Null string not allowed");
+               *cp++ = ' ';
+               *cp++ = 0;
+       }
+       yysavc = c;
+       yylval = copystr(token);
+       return (YSTRING);
+}
+
+/*
+ * Process a { ... } comment and return the following character.
+ */
+STATIC int
+lex_brace_comment()
+{
+       register int c;
+#ifdef PXP
+       getcm('{');
+#endif
+#ifdef PI
+       c = options();
+       while (c != '}') {
+               if (c <= 0) {
+                       yerror("Comment does not terminate - QUIT");
+                       pexit(ERRS);
+               }
+               if (c == '{') {
+                       warning();
+                       yyset();
+                       yerror("{ in a { ... } comment");
+               }
+               c = getchar();
+       }
+#endif
+       c = getchar();
+       return (c);
+}
+
+/*
+ * Process a (* ... *) style comment and return the following character.
+ */
+STATIC int
+lex_paren_comment()
+{
+       register int c;
+#ifdef PXP
+       getcm('*');
+       c = getchar();
+       return (c);
+#endif
+#ifdef PI
+       c = options();
+       for (;;) {
+               if (c < 0) {
+                       yerror("Comment does not terminate - QUIT");
+                       pexit(ERRS);
+               }
+               if (c == '(' && (c = getchar()) == '*') {
+                       warning();
+                       yyset();
+                       yerror("(* in a (* ... *) comment");
+               }
+               if (c == '*') {
+                       if ((c = getchar()) != ')')
+                               continue;
+                       c = getchar();
+                       return (c);
+               }
+               c = getchar();
+       }
+#endif
+}
+
+/*
+ * Handle an illegal character token.
+ */
+STATIC int
+lex_illegal(int ch)
+{
+       do
+               yysavc = getchar();
+       while (yysavc == ch);
+       yylval = ch;
+       return (YILLCH);
 }
