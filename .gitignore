@@ -1,0 +1,12 @@
+# Ignore macOS metadata
+.DS_Store
+
+# Ignore build outputs
+*.o
+a.out
+core
+tags
+
+# Ignore editor swap/backup files
+*~
+*.swp
