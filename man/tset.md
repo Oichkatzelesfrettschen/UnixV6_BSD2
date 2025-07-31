@@ -30,7 +30,7 @@ terminal id is specified by a *ttyn*(3) call on the diagnostic output.
 If the type turns out to be a dialup and the **-d** flag is specified,
 the terminal type is taken to be the named type. Similarly, if the type
 turns out to be a plugboard and the **-p** flag is specified, the
-terminal type assumed is taken to be *type .* The same applies the the
+terminal type assumed is taken to be *type .* The same applies to the
 **-b** flag on a bussiplexer port.
 
 On terminals that can backspace but not overstrike (such as a CRT) the
