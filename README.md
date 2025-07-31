@@ -117,6 +117,16 @@ We include a few single-file utilities (e.g. whoami, head, expand) in src/.  The
 make utils    # builds each src/*.c → build/
 make test     # runs ./tests/run_tests.sh
 
+4. CMake Build (Experimental)
+
+For modern machines we provide a small `CMakeLists.txt`. It mirrors the legacy Makefile but offers a unified `cmake --build` entry point. Typical use:
+
+    mkdir build && cd build
+    cmake .. -DCMAKE_BUILD_TYPE=Release
+    cmake --build .
+
+Use any C11-capable compiler. GCC 10+ or Clang 12+ with `-Wall -Wextra -O2` are known to work. Older sources may need `-fcommon` when built with recent GCC releases.
+
 
 ⸻
 
