@@ -95,7 +95,9 @@ Many of the subdirectories still contain their original makefile written for V7 
 
 2. Modern build.sh Profiles
 
-For an even simpler one-command build, use our Bash helper:
+The `build.sh` script walks every subdirectory under `src/` and `upgrade/`,
+invoking each Makefile it finds.  Use the `-p`/`--profile` flag to select a
+build style:
 
 # Developer build (debug symbols + warnings)
 ./build.sh
@@ -103,10 +105,10 @@ For an even simpler one-command build, use our Bash helper:
 # Performance-tuned build
 ./build.sh -p performance
 
-# Release-style build (O2, stripped)
+# Release-style build
 ./build.sh -p release
 
-Inspect build.sh to see which CFLAGS each profile applies.
+Run `./build.sh -h` for a brief summary of the profiles and flags.
 
 ⸻
 
