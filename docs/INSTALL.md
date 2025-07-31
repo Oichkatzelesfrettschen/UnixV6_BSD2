@@ -23,7 +23,7 @@ rm cont.a # optional
 ```
 
 ## Installation Procedure
-1. Run the `setup` script in the top directory to create required files and directories.
+1. Run the `setup` script in the top directory to create required files and directories. Use `-p PREFIX` to place them under a custom prefix if desired.
 2. For version 6 systems run `upgrade/include/install` to install retrofit headers in `/usr/include/retrofit`.
 3. Standard V6 systems may then run `bin/install` and skip to step 6.
 4. On non‑standard V6 systems:
