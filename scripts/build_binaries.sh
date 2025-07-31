@@ -7,6 +7,18 @@ CC=${PDP11_CC:-pdp11-aout-gcc}
 AS=${PDP11_AS:-pdp11-aout-as}
 AR=${PDP11_AR:-pdp11-aout-ar}
 
+# Verify that required cross-compilation tools are available.
+require_tool() {
+    command -v "$1" >/dev/null 2>&1 || {
+        echo "Missing required tool: $1" >&2
+        exit 1
+    }
+}
+
+require_tool "$CC"
+require_tool "$AS"
+require_tool "$AR"
+
 # Build csfix
 ${CC} -O doc/pascal/csfix.c -o doc/pascal/csfix
 

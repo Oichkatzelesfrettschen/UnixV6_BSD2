@@ -64,7 +64,7 @@ A paper describing the syntactic error recovery mechanism used in
 will be presented at the ACM Conference on Compiler Construction
 in Boulder Colorado in August, 1979.
 .SH
-Acknowledgements
+Acknowledgments
 .PP
 This version of
 .I px

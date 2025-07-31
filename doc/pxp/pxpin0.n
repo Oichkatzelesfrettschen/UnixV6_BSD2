@@ -91,7 +91,7 @@ gives examples of using
 .XP
 and is the general reference guide for the system.
 .SH
-Acknowledgements
+Acknowledgments
 .PP
 Ken Thompson wrote the first version of
 Berkeley
