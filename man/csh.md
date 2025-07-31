@@ -1097,7 +1097,7 @@ characters allowed in an argument list. Also command substitutions may
 substitute no more characters than are allowed in an argument list.
 
 To detect looping, the shell restricts the number of *alias*
-substititutions on a single line to 20.
+substitutions on a single line to 20.
 
 # SEE ALSO
 
