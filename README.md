@@ -1,20 +1,43 @@
 # UnixV6_BSD2
-A chimera of legacy Unix v6 and 2BSD: which they already were.
 
-## Building on a modern system
+> A chimera of legacy Unix Version 6 and 2-Clause BSD: which they already were.
 
-The repository now includes a top‑level `Makefile` that delegates to the
-original makefiles found throughout `src` and `upgrade`.  These historic
-makefiles were written for Version 7 UNIX and expect the traditional tools
-(`cc`, `as`, `ar`, `ed`, …).  When compiling today you can override the
-compiler and flags used by specifying `CC` and `CFLAGS` on the command line.
+---
 
-Typical invocation with a modern compiler:
+## Overview
+
+This repository brings together:
+
+1. **Original Unix V6 sources** (circa 1975), released under the historic **4-Clause BSD** license by the Regents of the University of California.  
+2. **All subsequent modifications and modern glue** (scripts, CI, small utilities), released under the **2-Clause (“Simplified”) BSD** license.
+
+We preserve the spirit—and legal heritage—of Berkeley Unix, while adding a reproducible, multi-profile build system and friendly documentation.
+
+---
+
+## Prerequisites
+
+- A POSIX-compatible shell (e.g. bash, zsh)  
+- A C compiler toolchain supporting C11 (e.g. `cc`, `gcc`, or `clang`)  
+- GNU `make` (or compatible)  
+- Standard UNIX utilities (`ar`, `as`, `ld`, `ed`, …)  
+- (Optional) Python 3 for the test harness  
+- (Optional) `build.sh` helper uses `bash` features  
+
+---
+
+## Build
+
+We offer **two** top-level build entrypoints:
+
+### 1. `build.sh` profiles
 
 ```sh
-make CC=clang CFLAGS="-O2 -pipe -std=c11"
-```
+# Developer build (default, with debug symbols + warnings)
+./build.sh
 
-The default settings use `cc` and pass `-O2 -pipe -std=c11`.  Some
-subdirectories may require additional work to build outside of an historic
-environment.
+# High-performance build (optimized)
+./build.sh -p performance
+
+# Release build (stripped, O2)
+./build.sh -p release

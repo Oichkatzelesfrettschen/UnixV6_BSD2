@@ -1,68 +1,74 @@
 # UnixV6_BSD2 top-level Makefile
 #
-# This file orchestrates the build of the historical sources in the
-# `src` and `upgrade` trees.  Each subdirectory retains its original
-# `makefile` describing how the tools were built on mid 1970s UNIX
-# systems.  The rules below simply delegate to these makefiles while
-# allowing the user to specify modern compilers and flags.
-#
-# Usage:
-#   make            # build everything
-#   make clean      # remove intermediate files in all subdirectories
-#   make <dir>      # invoke make inside <dir>
-#
-# Variables that may be overridden on the command line:
-#   CC     - C compiler to invoke (default: cc)
-#   CFLAGS - Flags passed to the compiler (default: -O2 -pipe -std=c11)
-#   MAKE   - Make program (default: make)
-#
-# Example:
-#   make CC=clang CFLAGS="-O2 -Wall -std=c11"
-#
-# The historical makefiles expect a traditional V7 environment.  Many
-# of the programs will compile with a modern compiler provided the
-# above variables are set appropriately.  Some may require additional
-# porting which is beyond the scope of this wrapper.
+# Orchestrates:
+#  1) legacy “src” and “upgrade” subdirs (each with original 1970s-style Makefiles)
+#  2) a small set of modern utilities under src/%.c, built into build/
+#  3) a test harness for those utilities
 
-# Default tools
+#————————————————————————————————————————————————————
+# User‐overrideable tool settings
 CC     ?= cc
 CFLAGS ?= -O2 -pipe -std=c11
 MAKE   ?= make
 
-# Source subdirectories containing legacy makefiles
+#————————————————————————————————————————————————————
+# Legacy source subtrees
 SRC_SUBDIRS = \
-src \
-src/termlib \
-src/Mail \
-src/csh \
-src/ex \
-src/eyacc \
-src/libNS \
-src/me \
-src/net \
-src/pascal \
-src/pi \
-src/pi0 \
-src/pi1 \
-src/px \
-src/pxp \
-src/pxref
+  src \
+  src/termlib \
+  src/Mail \
+  src/csh \
+  src/ex \
+  src/eyacc \
+  src/libNS \
+  src/me \
+  src/net \
+  src/pascal \
+  src/pi \
+  src/pi0 \
+  src/pi1 \
+  src/px \
+  src/pxp \
+  src/pxref
 
 UPGRADE_SUBDIRS = \
-upgrade/libretro \
-upgrade/src
+  upgrade/libretro \
+  upgrade/src
 
-.PHONY: all clean $(SRC_SUBDIRS) $(UPGRADE_SUBDIRS)
+#————————————————————————————————————————————————————
+# “Modern” utilities to compile via src/%.c
+UTILS = whoami head expand printenv
 
-# Build everything
-all: $(SRC_SUBDIRS) $(UPGRADE_SUBDIRS)
+#————————————————————————————————————————————————————
+.PHONY: all legacy utils build test clean $(SRC_SUBDIRS) $(UPGRADE_SUBDIRS)
 
-# Delegate to each subdirectory's original makefile
+all: legacy utils
+
+# 1) Build the legacy trees
+legacy: $(SRC_SUBDIRS) $(UPGRADE_SUBDIRS)
+
 $(SRC_SUBDIRS) $(UPGRADE_SUBDIRS):
 	$(MAKE) -C $@ CC="$(CC)" CFLAGS="$(CFLAGS)"
 
-# Clean all build artifacts
+#————————————————————————————————————————————————————
+# 2) Build the small utilities
+build:
+	@mkdir -p build
+
+utils: build $(UTILS:%=build/%)
+
+build/%: src/%.c compat/retrofit.h
+	$(CC) $(CFLAGS) $< -o $@
+
+#————————————————————————————————————————————————————
+# 3) Run the utility test suite
+test: utils
+	./tests/run_tests.sh
+
+#————————————————————————————————————————————————————
+# Cleanup everything
 clean:
 	@for d in $(SRC_SUBDIRS) $(UPGRADE_SUBDIRS); do \
-	$(MAKE) -C $$d clean; \
+	  $(MAKE) -C $$d clean; \
 	done
+	rm -rf build tests/tmp
