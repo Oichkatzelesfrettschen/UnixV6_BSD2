@@ -14,7 +14,7 @@ ${CC} -O doc/pascal/csfix.c -o doc/pascal/csfix
 ${CC} -O misc/ar.c -o misc/ar
 
 # Build Pascal runtime pieces
-( cd src/pascal/assubs && ${AS} -o fcrt0 fcrt0.s )
+( cd src/pascal/assubs && ${AS} -o fcrt0.o fcrt0.s )
 
 # Build Pascal header
 ( cd src/pascal && ${CC} -O px_header.c -o px_header && dd if=px_header of=px_header.tmp bs=1b conv=sync && mv px_header.tmp px_header )
