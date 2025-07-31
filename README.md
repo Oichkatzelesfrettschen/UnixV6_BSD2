@@ -2,6 +2,8 @@
 
 A chimera of legacy Unix v6 and 2BSD: which they already were.
 
+* [Installation Guide](docs/INSTALL.md)
+* [ex Usage Basics](docs/USAGE.md)
 ## Documentation
 - [Installation Instructions](INSTALL.md)
 - Modernized manuals in [man/](man)
