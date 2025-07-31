@@ -199,7 +199,7 @@ mv /usr/ucb/pxp34 /usr/ucb/pxp
 |     |     |                                                                                                                                                                                              |
 |-----|-----|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 6\. |     | Install the manual sections in **man** copying them to **/usr/man/manu**. If you have version 6, follow the instructions in **upgrade/man** on adapting to the different manual macros used. |
-| 7\. |     | Add a line of the form                                                                                                                                                                       |
+| 7. |     | Add a line of the form                                                                                                                                                                       |
 
 /usr/lib/ex2.0preserve −a
 
@@ -212,8 +212,8 @@ try to run **/usr/lib/ex2.0preserve**.
 
 |     |     |                                                                                                                                                                                                                                                                                                                 |
 |-----|-----|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 7\. |     | So that the *msgs* program can receive messages which are sent via **mail** change, change your mail program to execute ‘‘/usr/ucb/msgs −s’’ with the message on the standard input whenever mail is sent to ‘‘msgs’’. A version 6 **mail** program which does this is in ‘‘mail.c’’ in the directory **misc**. |
-| 8\. |     | Make sure that the programs **/usr/lib/ex2.0preserve** and **/usr/lib/ex2.0recover** can write the directory **/usr/preserve**. For security, these programs should be owned by ‘‘root’’, mode 4755, and the directory **/usr/preserve** should be mode 755.                                                    |
+| 8. |     | So that the *msgs* program can receive messages which are sent via **mail** change, change your mail program to execute ‘‘/usr/ucb/msgs −s’’ with the message on the standard input whenever mail is sent to ‘‘msgs’’. A version 6 **mail** program which does this is in ‘‘mail.c’’ in the directory **misc**. |
+| 9. |     | Make sure that the programs **/usr/lib/ex2.0preserve** and **/usr/lib/ex2.0recover** can write the directory **/usr/preserve**. For security, these programs should be owned by ‘‘root’’, mode 4755, and the directory **/usr/preserve** should be mode 755.                                                    |
 
 The programs **/usr/ucb/setenv** and **/usr/ucb/tset** must be able to
 write **/etc/htmp**. It is wise to have **/etc/htmp** mode 644 and
@@ -222,8 +222,8 @@ write **/etc/htmp**. It is wise to have **/etc/htmp** mode 644 and
 
 |      |     |                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 |------|-----|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 9\.  |     | Initialize the **/etc/ttytype** data base with the types of the terminals on your system. The file contains one line per terminal. On version 6, each line has the (one character) terminal name, and then a 2 character code. On version 7 each line has a two character code, a space, and then the (arbitrary length) terminal name. See **misc/ttytype.v6** and **misc/ttytype** for samples. The codes are defined by the file **/etc/termcap**. |
-| 10\. |     | Initialize the Mail file **/usr/lib/Mail.rc** defining any *alias* groups for distribution of mail you wish. A line of the form                                                                                                                                                                                                                                                                                                                       |
+| 10.  |     | Initialize the **/etc/ttytype** data base with the types of the terminals on your system. The file contains one line per terminal. On version 6, each line has the (one character) terminal name, and then a 2 character code. On version 7 each line has a two character code, a space, and then the (arbitrary length) terminal name. See **misc/ttytype.v6** and **misc/ttytype** for samples. The codes are defined by the file **/etc/termcap**. |
+| 11. |     | Initialize the Mail file **/usr/lib/Mail.rc** defining any *alias* groups for distribution of mail you wish. A line of the form                                                                                                                                                                                                                                                                                                                       |
 
 alias staff bill kurt eric
 

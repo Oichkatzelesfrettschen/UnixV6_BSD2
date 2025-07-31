@@ -36,6 +36,8 @@ $PDP11_CC -O misc/ar.c -o misc/ar
 # Pascal runtime and header
 (cd src/pascal/assubs && $PDP11_AS -o fcrt0 fcrt0.s)
 (cd src/pascal && $PDP11_CC -O px_header.c -o px_header && dd if=px_header of=px_header bs=1b conv=sync)
+# The dd step pads `px_header` to a 512-byte boundary as required by the
+# PDP-11 toolchain.
 (cd src/pascal/opcodes && $PDP11_CC -O -c TRdata.c)
 
 # Retrofit library objects

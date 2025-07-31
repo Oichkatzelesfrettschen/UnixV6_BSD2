@@ -61,7 +61,7 @@ Use of the Network
 	7) Net Prototype Command
 Setting Up Defaults
 The Log File
-Acknowledgements
+Acknowledgments
 Appendix A: The Network at Berkeley
 Appendix B: Getting Started \(em An Example
 .DE
@@ -529,7 +529,7 @@ is an integer will print the last
 .I num
 lines from the file.
 .SH
-Acknowledgements
+Acknowledgments
 .PP
 Special thanks go to
 Bob Fabry, Bill Joy, Vance Vaughan, Ed Gould, Robyn Allsman,
@@ -726,7 +726,7 @@ any faster than 50 characters per second,
 and can slow to a fraction of that in peak system loading periods.
 This is due to an expansion of
 the data packets to accomodate a seven-bit data path,
-wakeup time on the machines, and the packet sent in acknowledgement.
+wakeup time on the machines, and the packet sent in acknowledgment.
 Heavy file transfer is faster by magnetic tape.
 .IP c)
 On the VAX the net commands are all in `/usr/new'.
