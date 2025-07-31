@@ -1,5 +1,5 @@
 # UnixV6_BSD2
-A chimera of legacy Unix V6 and 2BSD: which they already were.
+A chimera of legacy UNIX V6 and 2BSD: which they already were.
 
 ## Historical Context
 This repository mirrors material distributed on the "Second Berkeley Software Tape" dated May 1979.  The tape combined Bell Labs' Sixth Edition UNIX with Berkeley's early BSD enhancements.  It includes sources, documents and prebuilt binaries for PDP-11 based systems and the then-new VAX.
