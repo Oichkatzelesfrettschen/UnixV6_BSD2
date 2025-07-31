@@ -36,7 +36,7 @@ case "$profile" in
     performance)
         CFLAGS="-O2 -march=native" ;;
     release)
-        CFLAGS="-O2 -march=native -s" ;;
+        CFLAGS="-O2 -march=native -DNDEBUG" ;;
     *)
         echo "Invalid profile: $profile" >&2
         exit 1
