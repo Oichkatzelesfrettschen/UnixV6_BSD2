@@ -17,7 +17,7 @@ ${CC} -O misc/ar.c -o misc/ar
 ( cd src/pascal/assubs && ${AS} -o fcrt0 fcrt0.s )
 
 # Build Pascal header
-( cd src/pascal && ${CC} -O px_header.c -o px_header && dd if=px_header of=px_header bs=1b conv=sync )
+( cd src/pascal && ${CC} -O px_header.c -o px_header && dd if=px_header of=px_header.tmp bs=1b conv=sync && mv px_header.tmp px_header )
 
 # Build opcode data object
 ( cd src/pascal/opcodes && ${CC} -O -c TRdata.c )
