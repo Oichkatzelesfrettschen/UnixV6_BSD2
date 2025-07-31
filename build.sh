@@ -46,7 +46,7 @@ esac
 printf 'Using profile %s (CFLAGS=%s)\n' "$profile" "$CFLAGS"
 
 # Find all directories that contain a makefile and build them.
-find . -mindepth 2 -type f -iname "makefile*" -exec dirname {} \; | sort -u | while read -r dir; do
+find . -type f -iname "makefile*" -exec dirname {} \; | sort -u | while read -r dir; do
     (cd "$dir" && make CFLAGS="$CFLAGS")
     echo "=== Done $dir ==="
 done
