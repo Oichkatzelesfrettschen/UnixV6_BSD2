@@ -1,25 +1,46 @@
 #!/bin/sh
 # Setup script for 2BSD/UnixV6 environment.
 # Creates standard directories under a configurable prefix.
-# Usage: setup [-u usr_prefix] [-e etc_prefix]
+# Usage: setup [-p prefix] [-u usr_prefix] [-e etc_prefix] [-f]
 
-set -e
+set -euo pipefail
 
+PREFIX="/"
 USR_PREFIX="/usr"
 ETC_PREFIX="/etc"
+FORCE=0
 
 usage() {
-    echo "Usage: $0 [-u usr_prefix] [-e etc_prefix]" >&2
+    cat <<EOF >&2
+Usage: $0 [-p prefix] [-u usr_prefix] [-e etc_prefix] [-f]
+  -p prefix    Base directory (default '/')
+  -u usr       Override \$prefix/usr
+  -e etc       Override \$prefix/etc
+  -f           Force creation when prefix is '/'
+  -h           Show this help text
+EOF
     exit 1
 }
 
-while getopts "u:e:h" opt; do
+while getopts "p:u:e:fh" opt; do
     case "$opt" in
+        p) PREFIX="$OPTARG" ;;
         u) USR_PREFIX="$OPTARG" ;;
         e) ETC_PREFIX="$OPTARG" ;;
+        f) FORCE=1 ;;
         h|*) usage ;;
     esac
 done
+
+# Derive usr and etc prefixes from the base prefix if not explicitly set
+USR_PREFIX=${USR_PREFIX:-"${PREFIX%/}/usr"}
+ETC_PREFIX=${ETC_PREFIX:-"${PREFIX%/}/etc"}
+
+# Safety: refuse to operate on root prefix unless forced
+if [ "$PREFIX" = "/" ] && [ $FORCE -eq 0 ]; then
+    echo "Refusing to create directories directly under /. Use -f to force." >&2
+    exit 1
+fi
 
 # Function to create a directory if it does not already exist
 create_dir() {
@@ -42,19 +63,26 @@ create_file() {
     fi
 }
 
-# Berkeley command directory
+# Berkeley command directory containing UCB-style utilities
 create_dir "$USR_PREFIX/ucb" "Berkeley command directory"
-# msgs spool directory for the msgs(1) program
+
+# msgs spool directory used by the msgs(1) program
 create_dir "$USR_PREFIX/msgs" "msgs spool directory"
-# History tmp file for the shell
+
+# Temporary shell history file consulted by setenv(1)/csh
 create_file "$ETC_PREFIX/htmp" "shell history file"
-# Standard include files
+
+# Location for C include headers installed by the system
 create_dir "$USR_PREFIX/include" "include directory"
-# Retrofit header files for portability tweaks
+
+# Retrofit headers that patch missing functionality on V6
 create_dir "$USR_PREFIX/include/retrofit" "retrofit include directory"
-# me(7) macro package location
+
+# Macro package for the me(7) text formatter
 create_dir "$USR_PREFIX/lib/me" "me macros"
-# Terminal tab settings for tset(1)
+
+# Terminal capability tables consumed by tset(1)
 create_dir "$USR_PREFIX/lib/tabset" "tabset definitions"
+
 # Directory used by ed(1)/ex(1) to preserve files after crashes
 create_dir "$USR_PREFIX/preserve" "editor preserve directory"
