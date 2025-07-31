@@ -45,7 +45,7 @@ which is an archive of the contents of that directory. The best thing to
 do is to unarchive all the files so you can look at things easily. The
 find command
 
-find . −name cont.a −a −print
+find . -name cont.a -a -print
 
 will print the names of all the **cont.a** files. For each such file,
 change into its directory and do
