@@ -24,7 +24,7 @@ files which contain matching lines are printed. If the **-i** flag is
 used, then case of letters is ignored in comparisons. If the **-w** flag
 is used, then the expression is searched for as a word (as if surrounded
 by \`\\\<\' and \`\\\>\', see *ex*(UCB)) If the **-n** flag is used,
-each line is preceded its relative line number in the file. If the
+each line is preceded by its relative line number in the file. If the
 **-b** flag is used, each line is preceded by the block number on which
 it was found. This is sometimes useful in locating disk block numbers by
 context.
