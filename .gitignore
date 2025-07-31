@@ -1,6 +1,19 @@
-# Ignore build artifacts and binary files
+# macOS metadata
+.DS_Store
+
+# Build artifacts and binary files
 *.o
 *.out
+a.out
+core
+
+# Tag files
+tags
+
+# Editor swap/backup files
+*~
+*.swp
+
 # Pascal assembler outputs and headers
 src/pascal/px_header
 src/pascal/assubs/fcrt0
@@ -10,5 +23,3 @@ misc/ar
 doc/pascal/csfix
 doc/pascal/pmon.out
 upgrade/libretro/*.o
-# macOS metadata
-.DS_Store
