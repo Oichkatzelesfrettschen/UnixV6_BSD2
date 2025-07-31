@@ -121,9 +121,11 @@ make test     # runs ./tests/run_tests.sh
 ⸻
 
 Installation & Usage
-	1.	Format the installation notes and follow them:
+	1.      Read **docs/INSTALL.md** for a concise Markdown summary of the tape's setup procedure. The original troff source is available as `legacy/install.ms` and can be formatted with:
 
-nroff -ms install.ms | more
+```sh
+  nroff -ms legacy/install.ms | more
+```
 
 
 	2.	Install binaries to your UNIX V6 target (or emulator disk image).
