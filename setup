@@ -1,10 +1,60 @@
-mkdir /usr/ucb
-mkdir /usr/msgs
-cat /dev/null >>/etc/htmp
-mkdir /usr/include
-mkdir /usr/include/retrofit
-mkdir /usr/lib/me
-mkdir /usr/lib/tabset
-mkdir /usr/msgs
-mkdir /usr/preserve
-mkdir /usr/ucb
+#!/bin/sh
+# Setup script for 2BSD/UnixV6 environment.
+# Creates standard directories under a configurable prefix.
+# Usage: setup [-u usr_prefix] [-e etc_prefix]
+
+set -e
+
+USR_PREFIX="/usr"
+ETC_PREFIX="/etc"
+
+usage() {
+    echo "Usage: $0 [-u usr_prefix] [-e etc_prefix]" >&2
+    exit 1
+}
+
+while getopts "u:e:h" opt; do
+    case "$opt" in
+        u) USR_PREFIX="$OPTARG" ;;
+        e) ETC_PREFIX="$OPTARG" ;;
+        h|*) usage ;;
+    esac
+done
+
+# Function to create a directory if it does not already exist
+create_dir() {
+    path="$1"
+    desc="$2"
+    if [ ! -d "$path" ]; then
+        echo "Creating $desc: $path"
+        mkdir -p "$path"
+    fi
+}
+
+# Function to create an empty file if it does not already exist
+create_file() {
+    file="$1"
+    desc="$2"
+    if [ ! -f "$file" ]; then
+        echo "Creating $desc: $file"
+        mkdir -p "$(dirname "$file")"
+        : > "$file"
+    fi
+}
+
+# Berkeley command directory
+create_dir "$USR_PREFIX/ucb" "Berkeley command directory"
+# msgs spool directory for the msgs(1) program
+create_dir "$USR_PREFIX/msgs" "msgs spool directory"
+# History tmp file for the shell
+create_file "$ETC_PREFIX/htmp" "shell history file"
+# Standard include files
+create_dir "$USR_PREFIX/include" "include directory"
+# Retrofit header files for portability tweaks
+create_dir "$USR_PREFIX/include/retrofit" "retrofit include directory"
+# me(7) macro package location
+create_dir "$USR_PREFIX/lib/me" "me macros"
+# Terminal tab settings for tset(1)
+create_dir "$USR_PREFIX/lib/tabset" "tabset definitions"
+# Directory used by ed(1)/ex(1) to preserve files after crashes
+create_dir "$USR_PREFIX/preserve" "editor preserve directory"
