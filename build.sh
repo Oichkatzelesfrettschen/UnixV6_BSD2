@@ -48,5 +48,9 @@ printf 'Using profile %s (CFLAGS=%s)\n' "$profile" "$CFLAGS"
 # Find all directories that contain a makefile and build them.
 find . -type f -iname "makefile*" -exec dirname {} \; | sort -u | while read -r dir; do
     (cd "$dir" && make CFLAGS="$CFLAGS")
-    echo "=== Done $dir ==="
+    if [ $? -ne 0 ]; then
+        echo "=== Failed to build $dir ===" >&2
+    else
+        echo "=== Done $dir ==="
+    fi
 done
