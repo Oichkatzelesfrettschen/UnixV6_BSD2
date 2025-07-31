@@ -1,0 +1,14 @@
+# Ignore build artifacts and binary files
+*.o
+*.out
+# Pascal assembler outputs and headers
+src/pascal/px_header
+src/pascal/assubs/fcrt0
+src/tar
+/tar
+misc/ar
+doc/pascal/csfix
+doc/pascal/pmon.out
+upgrade/libretro/*.o
+# macOS metadata
+.DS_Store
