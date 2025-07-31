@@ -106,7 +106,21 @@ For an even simpler one-command build, use our Bash helper:
 # Release-style build (O2, stripped)
 ./build.sh -p release
 
-Inspect build.sh to see which CFLAGS each profile applies.
+
+Inspect `build.sh` to see which CFLAGS each profile applies.
+
+### Rebuilding removed binaries
+
+Historical archives and executables, such as `upgrade/libretro/libretro.a`, are
+no longer tracked in Git.  Run the helper script to regenerate them with your
+PDP‑11 cross compiler:
+
+```bash
+./scripts/build_binaries.sh
+```
+
+You may also invoke `make` directly inside `upgrade/libretro` for just the
+retrofit library.
 
 ⸻
 
