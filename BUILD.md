@@ -42,7 +42,7 @@ $PDP11_CC -O misc/ar.c -o misc/ar
 (cd upgrade/libretro && make clean && make CC=$PDP11_CC AS=$PDP11_AS AR=$PDP11_AR)
 
 # Sample profile output
-eval "$PDP11_CC -O src/pxp/pmon.c -o doc/pascal/pmon.out"
+$PDP11_CC -O src/pxp/pmon.c -o doc/pascal/pmon.out
 ```
 
 Refer to the individual makefiles under `doc/` and `upgrade/` for
