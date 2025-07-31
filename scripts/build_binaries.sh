@@ -8,7 +8,7 @@ AS=${PDP11_AS:-pdp11-aout-as}
 AR=${PDP11_AR:-pdp11-aout-ar}
 
 # Build csfix
-${CC} -O doc/pascal/csfix.c -o doc/pascal/csfix -lS
+${CC} -O doc/pascal/csfix.c -o doc/pascal/csfix
 
 # Build ar
 ${CC} -O misc/ar.c -o misc/ar
