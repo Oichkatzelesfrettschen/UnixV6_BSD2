@@ -38,8 +38,8 @@ rm cont.a # optional
    4. Prepare `pascal`, `pi`, `px` and `pxp`. Systems without hardware floating point should use `pi0`, `pi1`, `px34` and `pxp34`.
 6. Copy manual pages from `man` to `/usr/man/man*`. On V6 follow `upgrade/man` for macro differences.
 7. Add `/usr/lib/ex2.0preserve -a` to `/etc/rc` before the temporary-file cleanup.
-7. Modify your mail program so that messages to `msgs` run `/usr/ucb/msgs -s`. A sample V6 implementation is `misc/mail.c`.
-8. Ensure `/usr/lib/ex2.0preserve` and `/usr/lib/ex2.0recover` can write `/usr/preserve` (owned by `root`, mode 4755; directory mode 755). Programs `setenv` and `tset` need write access to `/etc/htmp`.
+8. Modify your mail program so that messages to `msgs` run `/usr/ucb/msgs -s`. A sample V6 implementation is `misc/mail.c`.
+9. Ensure `/usr/lib/ex2.0preserve` and `/usr/lib/ex2.0recover` can write `/usr/preserve` (owned by `root`, mode 4755; directory mode 755). Programs `setenv` and `tset` need write access to `/etc/htmp`.
 9. Populate `/etc/ttytype` with terminal types. See `misc/ttytype` and `misc/ttytype.v6` for examples. Terminal codes come from `/etc/termcap`.
 10. Edit `/usr/lib/Mail.rc` to define any desired mail aliases.
 
