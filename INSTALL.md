@@ -262,7 +262,7 @@ itself to work. See the comments at the beginning of the program
 
 |                   |     |                                                                                                                                                                                                                            |
 |-------------------|-----|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **/etc/termcap**  |     | If you get have or get terminals which aren’t described in this data base, you will have to add entries. The manual page for *termcap* explains how to write new entries.                                                  |
+| **/etc/termcap**  |     | If you have or get terminals which aren’t described in this data base, you will have to add entries. The manual page for *termcap* explains how to write new entries.                                                  |
 | **/etc/ttytype**  |     | This file tells the types of hardwired ports and which lines are dialups, and is used with *tset*. It must be edited when the system configuration changes.                                                                |
 | **/usr/preserve** |     | Editor temporaries are saved here after a system crash, when /usr/lib/ex2.0preserve is run out of /etc/rc. If no one cleans this directory out, it can get very large. You can periodically run a find command of the form |
 
