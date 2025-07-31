@@ -15,13 +15,13 @@ Thu Apr 19 23:25:43 PST 1979
 
 For installation instructions:
 
-        nroff -ms install.ms
+        docs/install_full.md
 
 Subdirectories:
         bin             Binaries for standard version 6 systems
         doc             Source for documents
         man             Source for manual pages
-        misc            A few miscellaneous files (see install.ms)
+        misc            A few miscellaneous files (see docs/install_full.md)
         src             Source for programs/troff macros
         upgrade         doc/man/src/include for version 6 systems
 
@@ -123,7 +123,7 @@ make test     # runs ./tests/run_tests.sh
 Installation & Usage
 	1.	Format the installation notes and follow them:
 
-nroff -ms install.ms | more
+docs/install_full.md
 
 
 	2.	Install binaries to your UNIX V6 target (or emulator disk image).
@@ -137,14 +137,15 @@ qemu-system-i386 -serial mon:stdio \
 
 
 
-Detailed, step-by-step instructions are in docs/INSTALL.md; runtime tips are in docs/USAGE.md.
+Detailed instructions are in docs/INSTALL.md; the full historical text is in docs/install_full.md. Runtime tips are in docs/USAGE.md.
 
 ⸻
 
 Documentation
 	•	docs/INSTALL.md — Installation guide
+        •       docs/install_full.md — Original installation notes
 	•	docs/USAGE.md   — Running & testing tips
-	•	man/             — Modernized manual pages (HTML/PDF)
+	•	man/             — Modernized manual pages (Markdown)
 	•	legacy/          — Raw troff archives from the original tape
 
 ⸻
